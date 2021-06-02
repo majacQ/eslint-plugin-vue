@@ -1,6 +1,13 @@
-# enforce valid `v-cloak` directives (valid-v-cloak)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/valid-v-cloak
+description: enforce valid `v-cloak` directives
+---
+# vue/valid-v-cloak
+> enforce valid `v-cloak` directives
 
-- :white_check_mark: The `"extends": "plugin:vue/recommended"` property in a configuration file enables this rule.
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
 This rule checks whether every `v-cloak` directive is valid.
 
@@ -12,28 +19,27 @@ This rule reports `v-cloak` directives in the following cases:
 - The directive has that modifier. E.g. `<div v-cloak.bbb></div>`
 - The directive has that attribute value. E.g. `<div v-cloak="ccc"></div>`
 
-:-1: Examples of **incorrect** code for this rule:
+<eslint-code-block :rules="{'vue/valid-v-cloak': ['error']}">
 
-```html
+```vue
 <template>
-    <div>
-        <div v-cloak:aaa></div>
-        <div v-cloak.bbb></div>
-        <div v-cloak="ccc"></div>
-    </div>
+  <!-- ✓ GOOD -->
+  <div v-cloak/>
+
+  <!-- ✗ BAD -->
+  <div v-cloak:aaa/>
+  <div v-cloak.bbb/>
+  <div v-cloak="ccc"/>
 </template>
 ```
 
-:+1: Examples of **correct** code for this rule:
-
-```html
-<template>
-    <div>
-        <div v-cloak></div>
-    </div>
-</template>
-```
+</eslint-code-block>
 
 ## :wrench: Options
 
 Nothing.
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/valid-v-cloak.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/valid-v-cloak.js)

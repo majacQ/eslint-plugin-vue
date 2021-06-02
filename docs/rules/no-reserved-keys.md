@@ -1,60 +1,83 @@
-# disallow overwriting reserved keys (no-reserved-keys)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/no-reserved-keys
+description: disallow overwriting reserved keys
+---
+# vue/no-reserved-keys
+> disallow overwriting reserved keys
 
-This rule prevents to use reserved names from to avoid conflicts and unexpected behavior.
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
-## Rule Details
+## :book: Rule Details
 
-:-1: Examples of **incorrect** code for this rule:
+This rule prevents to use [reserved names](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/utils/vue-reserved.json) to avoid conflicts and unexpected behavior.
 
-```js
+<eslint-code-block :rules="{'vue/no-reserved-keys': ['error']}">
+
+```vue
+<script>
+/* ✗ BAD */
 export default {
   props: {
     $el: String
   },
   computed: {
     $on: {
-      get () {
-      }
+      get () {}
     }
   },
   data: {
     _foo: null
   },
   methods: {
-    $nextTick () {
-    }
+    $nextTick () {}
   }
 }
+</script>
 ```
+
+</eslint-code-block>
 
 ## :wrench: Options
 
-This rule has an object option:
-
-`"reserved"`: [] (default) array of dissalowed names inside `groups`.
-
-`"groups"`: [] (default) array of additional groups to search for duplicates.
-
-### Example:
-
 ```json
 {
-  "vue/no-reserved-keys": [2, {
-    "reserved": ["foo", "foo2"],
-    "groups": ["asyncComputed"]
+  "vue/no-reserved-keys": ["error", {
+    "reserved": [],
+    "groups": []
   }]
 }
 ```
 
-:-1: Examples of **incorrect** code for this configuration
+- `reserved` (`string[]`) ... Array of additional restricted attributes inside `groups`. Default is empty.
+- `groups` (`string[]`) ... Array of additional group names to search for duplicates in. Default is empty.
 
-```js
+### `"reserved": ["foo", "foo2"], "groups": ["firebase"]`
+
+<eslint-code-block :rules="{'vue/no-reserved-keys': ['error', {reserved: ['foo', 'foo2'], groups: ['firebase']}]}">
+
+```vue
+<script>
+/* ✗ BAD */
 export default {
-  asyncComputed: {
-    foo2 () {}
-  },
   computed: {
     foo () {}
+  },
+  firebase: {
+    foo2 () {}
   }
 }
+</script>
 ```
+
+</eslint-code-block>
+
+## :books: Further reading
+
+- [List of reserved keys](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/utils/vue-reserved.json)
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/no-reserved-keys.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/no-reserved-keys.js)

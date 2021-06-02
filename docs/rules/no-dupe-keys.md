@@ -1,4 +1,13 @@
-# disallow duplication of field names (no-dupe-keys)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/no-dupe-keys
+description: disallow duplication of field names
+---
+# vue/no-dupe-keys
+> disallow duplication of field names
+
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
 This rule prevents to use duplicated names.
 
@@ -6,75 +15,65 @@ This rule prevents to use duplicated names.
 
 This rule is aimed at preventing duplicated property names.
 
-:-1: Examples of **incorrect** code for this rule:
+<eslint-code-block :rules="{'vue/no-dupe-keys': ['error']}">
 
-```js
+```vue
+<script>
+/* ✗ BAD */
 export default {
   props: {
     foo: String
   },
   computed: {
     foo: {
-      get () {
-      }
+      get () {}
     }
   },
   data: {
     foo: null
   },
   methods: {
-    foo () {
-    }
+    foo () {}
   }
 }
+</script>
 ```
 
-:+1: Examples of **correct** code for this rule:
-
-```js
-export default {
-  props: ['foo'],
-  computed: {
-    bar () {
-    }
-  },
-  data () {
-    return {
-      dat: null
-    }
-  },
-  methods: {
-    test () {
-    }
-  }
-}
-```
+</eslint-code-block>
 
 ## :wrench: Options
 
-This rule has an object option:
-
-`"groups"`: [] (default) array of additional groups to search for duplicates.
-
-### Example:
-
 ```json
 {
-  "vue/no-dupe-keys": [2, {
-    "groups": ["asyncComputed"]
+  "vue/no-dupe-keys": ["error", {
+    "groups": []
   }]
 }
 ```
 
-:-1: Examples of **incorrect** code for this configuration
+- `"groups"` (`string[]`) Array of additional groups to search for duplicates. Default is empty.
 
-```js
+### `"groups": ["firebase"]`
+
+<eslint-code-block :rules="{'vue/no-dupe-keys': ['error', {groups: ['firebase']}]}">
+
+```vue
+<script>
+/* ✗ BAD */
 export default {
   computed: {
     foo () {}
   },
-  asyncComputed: {
+  firebase: {
     foo () {}
   }
 }
+</script>
 ```
+
+</eslint-code-block>
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/no-dupe-keys.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/no-dupe-keys.js)

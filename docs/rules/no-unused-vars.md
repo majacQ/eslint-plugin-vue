@@ -1,29 +1,53 @@
-# disallow unused variable definitions of v-for directives or scope attributes (no-unused-vars)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/no-unused-vars
+description: disallow unused variable definitions of v-for directives or scope attributes
+---
+# vue/no-unused-vars
+> disallow unused variable definitions of v-for directives or scope attributes
 
-This rule report variable definitions of v-for directives or scope attributes if those are not used.
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
 ## :book: Rule Details
 
-:-1: Examples of **incorrect** code for this rule:
+This rule report variable definitions of v-for directives or scope attributes if those are not used.
 
-```html
+<eslint-code-block :rules="{'vue/no-unused-vars': ['error']}">
+
+```vue
 <template>
-    <ol v-for="i in 5"><!-- "i" is defined but never used. -->
-        <li>item</li>
-    </ol>
+  <!-- ✓ GOOD -->
+  <ol v-for="i in 5">
+    <li>{{ i }}</li>
+  </ol>
+
+  <!-- ✗ BAD -->
+  <ol v-for="i in 5">
+    <li>item</li>
+  </ol>
 </template>
 ```
 
-:+1: Examples of **correct** code for this rule:
-
-```html
-<template>
-    <ol v-for="i in 5">
-        <li>{{i}}</li><!-- "i" is defined and used. -->
-    </ol>
-</template>
-```
+</eslint-code-block>
 
 ## :wrench: Options
 
-Nothing.
+```js
+{
+    "vue/no-unused-vars": ["error", {
+        "ignorePattern": "^_"
+    }]
+}
+```
+
+- `ignorePattern` ... disables reporting when your definitions of v-for directives or scope attributes match your ignorePattern Regular expression. default `null`, will ignore nothing
+
+## :rocket: Suggestion
+
+- When your ignorePattern set to `^_`, we could provide a suggestion which add a prefix`_` to your variable and no more eslint error
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/no-unused-vars.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/no-unused-vars.js)

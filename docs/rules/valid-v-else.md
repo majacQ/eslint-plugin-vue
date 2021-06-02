@@ -1,6 +1,13 @@
-# enforce valid `v-else` directives (valid-v-else)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/valid-v-else
+description: enforce valid `v-else` directives
+---
+# vue/valid-v-else
+> enforce valid `v-else` directives
 
-- :white_check_mark: The `"extends": "plugin:vue/recommended"` property in a configuration file enables this rule.
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
 This rule checks whether every `v-else` directive is valid.
 
@@ -11,31 +18,25 @@ This rule reports `v-else` directives in the following cases:
 - The directive has that argument. E.g. `<div v-if="foo"></div><div v-else:aaa></div>`
 - The directive has that modifier. E.g. `<div v-if="foo"></div><div v-else.bbb></div>`
 - The directive has that attribute value. E.g. `<div v-if="foo"></div><div v-else="bar"></div>`
-- The directive is on the elements that the previous element don't have `v-if`/`v-if-else` directives. E.g. `<div v-else></div>`
-- The directive is on the elements which have `v-if`/`v-if-else` directives. E.g. `<div v-if="foo" v-else></div>`
+- The directive is on the elements that the previous element don't have `v-if`/`v-else-if` directives. E.g. `<div v-else></div>`
+- The directive is on the elements which have `v-if`/`v-else-if` directives. E.g. `<div v-if="foo" v-else></div>`
 
-:-1: Examples of **incorrect** code for this rule:
+<eslint-code-block :rules="{'vue/valid-v-else': ['error']}">
 
-```html
+```vue
 <template>
-    <div>
-        <div v-else="foo"></div>
-        <div v-else:aaa></div>
-        <div v-else.bbb></div>
-    </div>
+  <!-- ✓ GOOD -->
+  <div v-if="foo"/>
+  <div v-else/>
+
+  <!-- ✗ BAD -->
+  <div v-else="foo"/>
+  <div v-else:aaa/>
+  <div v-else.bbb/>
 </template>
 ```
 
-:+1: Examples of **correct** code for this rule:
-
-```html
-<template>
-    <div>
-        <div v-if="foo"></div>
-        <div v-else></div>
-    </div>
-</template>
-```
+</eslint-code-block>
 
 ## :wrench: Options
 
@@ -48,6 +49,11 @@ Nothing.
 - [no-parsing-error]
 
 
-[valid-v-if]:       valid-v-if.md
-[valid-v-else-if]:  valid-v-else-if.md
-[no-parsing-error]:      no-parsing-error.md
+[valid-v-if]: valid-v-if.md
+[valid-v-else-if]: valid-v-else-if.md
+[no-parsing-error]: no-parsing-error.md
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/valid-v-else.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/valid-v-else.js)

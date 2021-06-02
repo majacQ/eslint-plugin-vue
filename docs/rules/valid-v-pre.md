@@ -1,6 +1,13 @@
-# enforce valid `v-pre` directives (valid-v-pre)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/valid-v-pre
+description: enforce valid `v-pre` directives
+---
+# vue/valid-v-pre
+> enforce valid `v-pre` directives
 
-- :white_check_mark: The `"extends": "plugin:vue/recommended"` property in a configuration file enables this rule.
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
 This rule checks whether every `v-pre` directive is valid.
 
@@ -12,28 +19,27 @@ This rule reports `v-pre` directives in the following cases:
 - The directive has that modifier. E.g. `<div v-pre.bbb></div>`
 - The directive has that attribute value. E.g. `<div v-pre="ccc"></div>`
 
-:-1: Examples of **incorrect** code for this rule:
+<eslint-code-block :rules="{'vue/valid-v-pre': ['error']}">
 
-```html
+```vue
 <template>
-    <div>
-        <div v-pre:aaa></div>
-        <div v-pre.bbb></div>
-        <div v-pre="ccc"></div>
-    </div>
+  <!-- ✓ GOOD -->
+  <div v-pre/>
+
+  <!-- ✗ BAD -->
+  <div v-pre:aaa/>
+  <div v-pre.bbb/>
+  <div v-pre="ccc"/>
 </template>
 ```
 
-:+1: Examples of **correct** code for this rule:
-
-```html
-<template>
-    <div>
-        <div v-pre></div>
-    </div>
-</template>
-```
+</eslint-code-block>
 
 ## :wrench: Options
 
 Nothing.
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/valid-v-pre.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/valid-v-pre.js)

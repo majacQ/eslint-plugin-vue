@@ -17,7 +17,7 @@ const rule = require('../../../lib/rules/valid-v-show')
 // ------------------------------------------------------------------------------
 
 const tester = new RuleTester({
-  parser: 'vue-eslint-parser',
+  parser: require.resolve('vue-eslint-parser'),
   parserOptions: { ecmaVersion: 2015 }
 })
 
@@ -46,6 +46,11 @@ tester.run('valid-v-show', rule, {
     {
       filename: 'test.vue',
       code: '<template><div v-show></div></template>',
+      errors: ["'v-show' directives require that attribute value."]
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div v-show=""></div></template>',
       errors: ["'v-show' directives require that attribute value."]
     }
   ]

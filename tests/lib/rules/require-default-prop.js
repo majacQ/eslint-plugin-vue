@@ -1,6 +1,6 @@
 /**
  * @fileoverview Require default value for props
- * @author Michał Sajnóg <msajnog93@gmail.com> (http://github.com/michalsnik)
+ * @author Michał Sajnóg <msajnog93@gmail.com> (https://github.com/michalsnik)
  */
 'use strict'
 
@@ -11,8 +11,7 @@
 const rule = require('../../../lib/rules/require-default-prop')
 const RuleTester = require('eslint').RuleTester
 const parserOptions = {
-  ecmaVersion: 6,
-  ecmaFeatures: { experimentalObjectRestSpread: true },
+  ecmaVersion: 2018,
   sourceType: 'module'
 }
 
@@ -20,7 +19,7 @@ const parserOptions = {
 // Tests
 // ------------------------------------------------------------------------------
 
-const ruleTester = new RuleTester()
+const ruleTester = new RuleTester({ parserOptions })
 ruleTester.run('require-default-prop', rule, {
 
   valid: [
@@ -39,15 +38,35 @@ ruleTester.run('require-default-prop', rule, {
             },
             c: {
               type: Number,
-              default: 0,
+              required: false,
+              default: 0
+            },
+            d: {
+              type: String,
+              required: false,
+              'default': 'lorem'
+            },
+            e: {
+              type: Boolean
+            },
+            f: {
+              type: Boolean,
               required: false
             },
+            g: {
+              type: Boolean,
+              default: true
+            },
+            h: {
+              type: [Boolean]
+            },
+            i: Boolean,
+            j: [Boolean],
             // eslint-disable-next-line require-default-prop
-            d: Number
+            k: Number
           }
         }
-      `,
-      parserOptions
+      `
     },
     {
       filename: 'test.vue',
@@ -66,8 +85,101 @@ ruleTester.run('require-default-prop', rule, {
             }
           }
         }
+      `
+    },
+    {
+      filename: 'test.vue',
+      code: `
+        const x = {
+          type: Object,
+          default() {
+            return {
+              foo: 1,
+              bar: 2
+            }
+          }
+        }
+        export default {
+          props: {
+            a: {
+              ...x,
+              default() {
+                return {
+                  ...x.default(),
+                  baz: 3
+                }
+              }
+            }
+          }
+        }
+      `
+    },
+    {
+      filename: 'test.vue',
+      code: `
+        export default (Vue as VueConstructor<Vue>).extend({
+          props: {
+            a: {
+              type: String,
+              required: true
+            } as PropOptions<string>
+          }
+        });
       `,
-      parserOptions
+      parser: require.resolve('@typescript-eslint/parser')
+    },
+    {
+      filename: 'test.vue',
+      code: `
+        export default Vue.extend({
+          props: {
+            a: {
+              type: String,
+              required: true
+            } as PropOptions<string>
+          }
+        });
+      `,
+      parser: require.resolve('@typescript-eslint/parser')
+    },
+    {
+      filename: 'test.vue',
+      code: `
+        export default {
+          props: {
+            bar,
+            baz: prop,
+            bar1: foo()
+          }
+        }
+      `
+    },
+    {
+      // https://github.com/vuejs/eslint-plugin-vue/issues/1040
+      filename: 'destructuring-test.vue',
+      code: `
+        export default {
+          props: {
+            foo: {
+              ...foo,
+              default: 0
+            },
+          }
+        }
+      `
+    },
+    {
+      filename: 'unknown-prop-details-test.vue',
+      code: `
+        export default {
+          props: {
+            foo: {
+              [bar]: true,
+              default: 0
+            },
+          }
+        }
+      `
     }
   ],
 
@@ -85,11 +197,14 @@ ruleTester.run('require-default-prop', rule, {
             d: {
               type: Number,
               required: false
+            },
+            e: [Boolean, String],
+            f: {
+              type: [Boolean, String],
             }
           }
         }
       `,
-      parserOptions,
       errors: [{
         message: `Prop 'a' requires default value to be set.`,
         line: 4
@@ -102,7 +217,125 @@ ruleTester.run('require-default-prop', rule, {
       }, {
         message: `Prop 'd' requires default value to be set.`,
         line: 9
+      }, {
+        message: `Prop 'e' requires default value to be set.`,
+        line: 13
+      }, {
+        message: `Prop 'f' requires default value to be set.`,
+        line: 14
       }]
+    },
+    {
+      filename: 'test.vue',
+      code: `
+        export default (Vue as VueConstructor<Vue>).extend({
+          props: {
+            a: {
+              type: String
+            } as PropOptions<string>
+          }
+        });
+      `,
+      parser: require.resolve('@typescript-eslint/parser'),
+      errors: [{
+        message: `Prop 'a' requires default value to be set.`,
+        line: 4
+      }]
+    },
+    {
+      filename: 'test.vue',
+      code: `
+        export default Vue.extend({
+          props: {
+            a: {
+              type: String
+            } as PropOptions<string>
+          }
+        });
+      `,
+      parser: require.resolve('@typescript-eslint/parser'),
+      errors: [{
+        message: `Prop 'a' requires default value to be set.`,
+        line: 4
+      }]
+    },
+
+    // computed propertys
+    {
+      filename: 'test.vue',
+      code: `
+        export default {
+          props: {
+            a: String,
+            'b': String,
+            ['c']: String,
+            [\`d\`]: String,
+          }
+        };
+      `,
+      errors: [{
+        message: `Prop 'a' requires default value to be set.`,
+        line: 4
+      }, {
+        message: `Prop 'b' requires default value to be set.`,
+        line: 5
+      }, {
+        message: `Prop 'c' requires default value to be set.`,
+        line: 6
+      }, {
+        message: `Prop 'd' requires default value to be set.`,
+        line: 7
+      }]
+    },
+    // unknown static name
+    {
+      filename: 'test.vue',
+      code: `
+        export default {
+          props: {
+            [foo]: String,
+            [bar()]: String,
+            [baz.baz]: String,
+          }
+        };
+      `,
+      errors: [{
+        message: `Prop '[foo]' requires default value to be set.`,
+        line: 4
+      }, {
+        message: `Prop '[bar()]' requires default value to be set.`,
+        line: 5
+      }, {
+        message: `Prop '[baz.baz]' requires default value to be set.`,
+        line: 6
+      }]
+    },
+    {
+      // https://github.com/vuejs/eslint-plugin-vue/issues/1040
+      filename: 'destructuring-test.vue',
+      code: `
+        export default {
+          props: {
+            foo: {
+              ...foo
+            },
+          }
+        }
+      `,
+      errors: ['Prop \'foo\' requires default value to be set.']
+    },
+    {
+      filename: 'unknown-prop-details-test.vue',
+      code: `
+        export default {
+          props: {
+            foo: {
+              [bar]: true
+            },
+          }
+        }
+      `,
+      errors: ['Prop \'foo\' requires default value to be set.']
     }
   ]
 })

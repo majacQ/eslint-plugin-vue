@@ -1,55 +1,108 @@
-# enforce attribute naming style in template (attribute-hyphenation)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/attribute-hyphenation
+description: enforce attribute naming style on custom components in template
+---
+# vue/attribute-hyphenation
+> enforce attribute naming style on custom components in template
 
-- :wrench: The `--fix` option on the [command line](http://eslint.org/docs/user-guide/command-line-interface#fix) can automatically fix some of the problems reported by this rule.
+- :gear: This rule is included in all of `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
+- :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
+
+## :book: Rule Details
+
+This rule enforces using hyphenated attribute names on custom components in Vue templates.
+
+<eslint-code-block fix :rules="{'vue/attribute-hyphenation': ['error', 'always']}">
+
+```vue
+<template>
+  <!-- ✔ GOOD -->
+  <MyComponent my-prop="prop" />
+
+  <!-- ✘ BAD -->
+  <MyComponent myProp="prop" />
+</template>
+```
+
+</eslint-code-block>
 
 ## :wrench: Options
 
-Default casing is set to `always`
-
+```json
+{
+  "vue/attribute-hyphenation": ["error", "always" | "never", {
+    "ignore": []
+  }]
+}
 ```
-'vue/attribute-hyphenation': [2, 'always'|'never']
-```
 
-### `"always"` - Use hyphenated name. (It errors on upper case letters.)
+Default casing is set to `always` with `['data-', 'aria-', 'slot-scope']` set to be ignored
 
-:+1: Examples of **correct** code`:
+- `"always"` (default) ... Use hyphenated name.
+- `"never"` ... Don't use hyphenated name except `data-`, `aria-` and `slot-scope`.
+- `"ignore"` ... Array of ignored names
 
-```html
+### `"always"`
+It errors on upper case letters.
+
+<eslint-code-block fix :rules="{'vue/attribute-hyphenation': ['error', 'always']}">
+
+```vue
 <template>
-  <foo my-prop="prop">
-    <a onClick="return false"></a>
-  </foo>
+  <!-- ✔ GOOD -->
+  <MyComponent my-prop="prop" />
+
+  <!-- ✘ BAD -->
+  <MyComponent myProp="prop" />
 </template>
 ```
 
-:-1: Examples of **incorrect** code`:
+</eslint-code-block>
 
-```html
+### `"never"`
+It errors on hyphens except `data-`, `aria-` and `slot-scope`.
+
+<eslint-code-block fix :rules="{'vue/attribute-hyphenation': ['error', 'never']}">
+
+```vue
 <template>
-  <foo myProp="prop">
-    <a onClick="return false"></a>
-  </foo>
+  <!-- ✔ GOOD -->
+  <MyComponent myProp="prop" />
+  <MyComponent data-id="prop" />
+  <MyComponent aria-role="button" />
+  <MyComponent slot-scope="prop" />
+
+  <!-- ✘ BAD -->
+  <MyComponent my-prop="prop" />
 </template>
 ```
 
-### `"never"` - Don't use hyphenated name. (It errors on hyphens except `data-` and `aria-`.)
+</eslint-code-block>
 
-:+1: Examples of **correct** code`:
+### `"never", { "ignore": ["custom-prop"] }` 
+Don't use hyphenated name but allow custom attributes
 
-```html
+<eslint-code-block fix :rules="{'vue/attribute-hyphenation': ['error', 'never', { ignore: ['custom-prop']}]}">
+
+```vue
 <template>
-  <foo myProp="prop">
-    <a onClick="return false"></a>
-  </foo>
+  <!-- ✔ GOOD -->
+  <MyComponent myProp="prop" />
+  <MyComponent custom-prop="prop" />
+  <MyComponent data-id="prop" />
+  <MyComponent aria-role="button" />
+  <MyComponent slot-scope="prop" />
+
+  <!-- ✘ BAD -->
+  <MyComponent my-prop="prop" />
 </template>
 ```
 
-:-1: Examples of **incorrect** code`:
+</eslint-code-block>
 
-```html
-<template>
-  <foo my-prop="prop">
-    <a onClick="return false"></a>
-  </foo>
-</template>
-```
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/attribute-hyphenation.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/attribute-hyphenation.js)

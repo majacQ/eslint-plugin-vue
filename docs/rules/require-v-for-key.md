@@ -1,36 +1,38 @@
-# require `v-bind:key` with `v-for` directives (require-v-for-key)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/require-v-for-key
+description: require `v-bind:key` with `v-for` directives
+---
+# vue/require-v-for-key
+> require `v-bind:key` with `v-for` directives
 
-- :white_check_mark: The `"extends": "plugin:vue/recommended"` property in a configuration file enables this rule.
-
-When `v-for` is written on custom components, it requires `v-bind:key` at the same time.
-On other elements, it's better that `v-bind:key` is written as well.
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
 ## :book: Rule Details
 
-This rule reports the elements which have `v-for` and do not have `v-bind:key`.
+This rule reports the elements which have `v-for` and do not have `v-bind:key` with exception to custom components.
 
-This rule does not report custom components.
-It will be reported by [no-invalid-v-for] rule.
+<eslint-code-block :rules="{'vue/require-v-for-key': ['error']}">
 
-:-1: Examples of **incorrect** code for this rule:
-
-```html
+```vue
 <template>
-    <div>
-        <div v-for="x in list"></div>
-    </div>
+  <!-- ✓ GOOD -->
+  <div
+    v-for="todo in todos"
+    :key="todo.id"
+  />
+  <!-- ✗ BAD -->
+  <div v-for="todo in todos"/>
 </template>
 ```
 
-:+1: Examples of **correct** code for this rule:
+</eslint-code-block>
 
-```html
-<template>
-    <div>
-        <div v-for="x in list" :key="x.id"></div>
-    </div>
-</template>
-```
+::: warning Note
+This rule does not report missing `v-bind:key` on custom components.
+It will be reported by [valid-v-for](./valid-v-for.md) rule.
+:::
 
 ## :wrench: Options
 
@@ -38,6 +40,14 @@ Nothing.
 
 ## :couple: Related rules
 
-- [no-invalid-v-for]
+- [valid-v-for](./valid-v-for.md)
 
-[no-invalid-v-for]: ./no-invalid-v-for.md
+## :books: Further reading
+
+- [Style guide - Keyed v-for](https://vuejs.org/v2/style-guide/#Keyed-v-for-essential)
+- [Guide - v-for with a Component](https://vuejs.org/v2/guide/list.html#v-for-with-a-Component)
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/require-v-for-key.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/require-v-for-key.js)

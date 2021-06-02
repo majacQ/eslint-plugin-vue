@@ -1,6 +1,13 @@
-# enforce valid `v-once` directives (valid-v-once)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/valid-v-once
+description: enforce valid `v-once` directives
+---
+# vue/valid-v-once
+> enforce valid `v-once` directives
 
-- :white_check_mark: The `"extends": "plugin:vue/recommended"` property in a configuration file enables this rule.
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
 This rule checks whether every `v-once` directive is valid.
 
@@ -12,28 +19,27 @@ This rule reports `v-once` directives in the following cases:
 - The directive has that modifier. E.g. `<div v-once.bbb></div>`
 - The directive has that attribute value. E.g. `<div v-once="ccc"></div>`
 
-:-1: Examples of **incorrect** code for this rule:
+<eslint-code-block :rules="{'vue/valid-v-once': ['error']}">
 
-```html
+```vue
 <template>
-    <div>
-        <div v-once:aaa></div>
-        <div v-once.bbb></div>
-        <div v-once="ccc"></div>
-    </div>
+  <!-- ✓ GOOD -->
+  <div v-once/>
+
+  <!-- ✗ BAD -->
+  <div v-once:aaa/>
+  <div v-once.bbb/>
+  <div v-once="ccc"/>
 </template>
 ```
 
-:+1: Examples of **correct** code for this rule:
-
-```html
-<template>
-    <div>
-        <div v-once></div>
-    </div>
-</template>
-```
+</eslint-code-block>
 
 ## :wrench: Options
 
 Nothing.
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/valid-v-once.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/valid-v-once.js)

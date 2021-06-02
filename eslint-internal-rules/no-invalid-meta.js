@@ -17,14 +17,15 @@
  * @returns {ASTNode} The Property node or null if not found.
  */
 function getPropertyFromObject (property, node) {
-  const properties = node.properties
+  if (node && node.type === 'ObjectExpression') {
+    const properties = node.properties
 
-  for (let i = 0; i < properties.length; i++) {
-    if (properties[i].key.name === property) {
-      return properties[i]
+    for (let i = 0; i < properties.length; i++) {
+      if (properties[i].key.name === property) {
+        return properties[i]
+      }
     }
   }
-
   return null
 }
 
@@ -66,22 +67,10 @@ function hasMetaDocsDescription (metaPropertyNode) {
  * @param {ASTNode} metaPropertyNode The `meta` ObjectExpression for this rule.
  * @returns {boolean} `true` if a `docs.category` property exists.
  */
-function hasMetaDocsCategory (metaPropertyNode) {
+function hasMetaDocsCategories (metaPropertyNode) {
   const metaDocs = getPropertyFromObject('docs', metaPropertyNode.value)
 
-  return metaDocs && getPropertyFromObject('category', metaDocs.value)
-}
-
-/**
- * Whether this `meta` ObjectExpression has a `docs.recommended` property defined or not.
- *
- * @param {ASTNode} metaPropertyNode The `meta` ObjectExpression for this rule.
- * @returns {boolean} `true` if a `docs.recommended` property exists.
- */
-function hasMetaDocsRecommended (metaPropertyNode) {
-  const metaDocs = getPropertyFromObject('docs', metaPropertyNode.value)
-
-  return metaDocs && getPropertyFromObject('recommended', metaDocs.value)
+  return metaDocs && getPropertyFromObject('categories', metaDocs.value)
 }
 
 /**
@@ -120,13 +109,8 @@ function checkMetaValidity (context, exportsNode) {
     return
   }
 
-  if (!hasMetaDocsCategory(metaProperty)) {
-    context.report(metaProperty, 'Rule is missing a meta.docs.category property.')
-    return
-  }
-
-  if (!hasMetaDocsRecommended(metaProperty)) {
-    context.report(metaProperty, 'Rule is missing a meta.docs.recommended property.')
+  if (!hasMetaDocsCategories(metaProperty)) {
+    context.report(metaProperty, 'Rule is missing a meta.docs.categories property.')
     return
   }
 
@@ -153,8 +137,7 @@ module.exports = {
   meta: {
     docs: {
       description: 'enforce correct use of `meta` property in core rules',
-      category: 'Internal',
-      recommended: false
+      categories: ['Internal']
     },
 
     schema: []

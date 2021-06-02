@@ -1,5 +1,5 @@
 /**
- * @fileoverview enforce usage of `this` in template.
+ * @fileoverview disallow usage of `this` in template.
  * @author Armano
  */
 'use strict'
@@ -17,7 +17,7 @@ const RuleTester = require('eslint').RuleTester
 // ------------------------------------------------------------------------------
 
 const ruleTester = new RuleTester({
-  parser: 'vue-eslint-parser',
+  parser: require.resolve('vue-eslint-parser'),
   parserOptions: { ecmaVersion: 2015 }
 })
 
@@ -106,6 +106,12 @@ function createValidTests (prefix, options) {
         </div>
       </template><!-- ${comment} -->`,
       options
+    },
+
+    // We cannot use `.` in dynamic arguments because the right of the `.` becomes a modifier.
+    {
+      code: `<template><div v-on:[x]="1"></div></template><!-- ${comment} -->`,
+      options
     }
   ]
 }
@@ -153,6 +159,13 @@ function createInvalidTests (prefix, options, message, type) {
       errors: [{ message, type }],
       options
     }
+
+    // We cannot use `.` in dynamic arguments because the right of the `.` becomes a modifier.
+    // {
+    //   code: `<template><div v-on:[${prefix}name]="1"></div></template><!-- ${comment} -->`,
+    //   errors: [{ message, type }],
+    //   options
+    // }
   ].concat(options[0] === 'always'
     ? []
     : [

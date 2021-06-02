@@ -17,7 +17,7 @@ const rule = require('../../../lib/rules/valid-v-model')
 // ------------------------------------------------------------------------------
 
 const tester = new RuleTester({
-  parser: 'vue-eslint-parser',
+  parser: require.resolve('vue-eslint-parser'),
   parserOptions: { ecmaVersion: 2015 }
 })
 
@@ -66,6 +66,74 @@ tester.run('valid-v-model', rule, {
     {
       filename: 'test.vue',
       code: '<template><div><div v-for="x in list"><input v-model="x.foo"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="foo[x]"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="foo[x - 1]"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="foo[`${x}`]"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="foo[`prefix_${x}`]"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="foo[x ? x : \'_\']"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="foo[x || \'_\']"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="foo[x()]"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="foo[/r/.match(x) ? 0 : 1]"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="foo[typeof x]"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="foo[tag`${x}`]"></div></div></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><input :type="a" v-model="b"></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><input v-bind:type="a" v-model="b"></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><MyComponent v-model:aaa="a"></MyComponent></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><MyComponent v-model:aaa.modifier="a"></MyComponent></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><MyComponent v-model.modifier="a"></MyComponent></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><MyComponent v-model:aaa.modifier.modifierTwo="a"></MyComponent></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><MyComponent v-model.modifier.modifierTwo="a"></MyComponent></template>'
     }
   ],
   invalid: [
@@ -96,16 +164,6 @@ tester.run('valid-v-model', rule, {
     },
     {
       filename: 'test.vue',
-      code: '<template><input :type="a" v-model="b"></template>',
-      errors: ["'v-model' directives don't support dynamic input types."]
-    },
-    {
-      filename: 'test.vue',
-      code: '<template><input v-bind:type="a" v-model="b"></template>',
-      errors: ["'v-model' directives don't support dynamic input types."]
-    },
-    {
-      filename: 'test.vue',
       code: '<template><input type="file" v-model="b"></template>',
       errors: ["'v-model' directives don't support 'file' input type."]
     },
@@ -113,6 +171,21 @@ tester.run('valid-v-model', rule, {
       filename: 'test.vue',
       code: '<template><div><div v-for="x in list"><input v-model="x"></div></div></template>',
       errors: ["'v-model' directives cannot update the iteration variable 'x' itself."]
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="(x)"></div></div></template>',
+      errors: ["'v-model' directives cannot update the iteration variable 'x' itself."]
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="x in list"><input v-model="(((x)))"></div></div></template>',
+      errors: ["'v-model' directives cannot update the iteration variable 'x' itself."]
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><div><div v-for="e in list"><input v-model="e"></div></div></template>',
+      errors: ["'v-model' directives cannot update the iteration variable 'e' itself."]
     }
   ]
 })

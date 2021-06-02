@@ -17,7 +17,7 @@ const rule = require('../../../lib/rules/no-duplicate-attributes')
 // ------------------------------------------------------------------------------
 
 const tester = new RuleTester({
-  parser: 'vue-eslint-parser',
+  parser: require.resolve('vue-eslint-parser'),
   parserOptions: { ecmaVersion: 2015 }
 })
 
@@ -52,6 +52,14 @@ tester.run('no-duplicate-attributes', rule, {
       filename: 'test.vue',
       code: '<template><div><div :style="a" style="b"></div></div></template>',
       options: [{ allowCoexistStyle: true }]
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><my-component foo :[foo]></my-component></template>'
+    },
+    {
+      filename: 'test.vue',
+      code: '<template><my-component :foo :[foo]></my-component></template>'
     }
   ],
   invalid: [

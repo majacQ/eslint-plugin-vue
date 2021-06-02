@@ -16,7 +16,7 @@ const RuleTester = require('eslint').RuleTester
 // ------------------------------------------------------------------------------
 
 const ruleTester = new RuleTester({
-  parser: 'vue-eslint-parser',
+  parser: require.resolve('vue-eslint-parser'),
   parserOptions: { ecmaVersion: 2015, sourceType: 'module' }
 })
 
@@ -44,6 +44,36 @@ ruleTester.run('no-multi-spaces', rule, {
     {
       filename: 'test.js',
       code: 'export default { }'
+    },
+    {
+      code: `
+      <template>
+        <i
+          :class="{
+            'fa-angle-up'   : isExpanded,
+            'fa-angle-down' : !isExpanded,
+          }"
+        />
+      </template>
+      `,
+      options: [{
+        ignoreProperties: true
+      }]
+    },
+    {
+      code: `
+      <template>
+        <i
+          :class="{
+            'fa-angle-up':   isExpanded,
+            'fa-angle-down': !isExpanded,
+          }"
+        />
+      </template>
+      `,
+      options: [{
+        ignoreProperties: true
+      }]
     }
   ],
   invalid: [
@@ -88,8 +118,8 @@ ruleTester.run('no-multi-spaces', rule, {
       output: '<template><div :class="foo" /></template>',
       errors: [
         {
-          message: "Multiple spaces found before ':class'.",
-          type: 'HTMLIdentifier'
+          message: "Multiple spaces found before ':'.",
+          type: 'Punctuator'
         },
         {
           message: "Multiple spaces found before '/>'.",
@@ -174,6 +204,62 @@ ruleTester.run('no-multi-spaces', rule, {
         {
           message: "Multiple spaces found before '\"'.",
           type: 'Punctuator'
+        }
+      ]
+    },
+    {
+      code: `
+      <template>
+        <i
+          :class="{
+            'fa-angle-up'   : isExpanded,
+            'fa-angle-down' : !isExpanded,
+          }"
+        />
+      </template>
+      `,
+      output: `
+      <template>
+        <i
+          :class="{
+            'fa-angle-up' : isExpanded,
+            'fa-angle-down' : !isExpanded,
+          }"
+        />
+      </template>
+      `,
+      errors: [
+        {
+          message: "Multiple spaces found before ':'.",
+          type: 'Punctuator'
+        }
+      ]
+    },
+    {
+      code: `
+      <template>
+        <i
+          :class="{
+            'fa-angle-up':   isExpanded,
+            'fa-angle-down': !isExpanded,
+          }"
+        />
+      </template>
+      `,
+      output: `
+      <template>
+        <i
+          :class="{
+            'fa-angle-up': isExpanded,
+            'fa-angle-down': !isExpanded,
+          }"
+        />
+      </template>
+      `,
+      errors: [
+        {
+          message: "Multiple spaces found before 'isExpanded'.",
+          type: 'Identifier'
         }
       ]
     }

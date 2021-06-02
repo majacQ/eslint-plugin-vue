@@ -1,33 +1,79 @@
-# disallow multiple spaces (no-multi-spaces)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/no-multi-spaces
+description: disallow multiple spaces
+---
+# vue/no-multi-spaces
+> disallow multiple spaces
 
-- :wrench: The `--fix` option on the [command line](http://eslint.org/docs/user-guide/command-line-interface#fix) can automatically fix some of the problems reported by this rule.
+- :gear: This rule is included in all of `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
+- :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
 
-The `--fix` option on the command line can automatically fix some of the problems reported by this rule.
+## :book: Rule Details
 
-This rule aims to remove multiple spaces in a row between attributes witch are not used for indentation.
+This rule aims at removing multiple spaces in tags, which are not used for indentation.
 
-## Rule Details
+<eslint-code-block fix :rules="{'vue/no-multi-spaces': ['error']}">
 
-Examples of **incorrect** code for this rule:
-
-```html
+```vue
 <template>
-  <div class="foo"      :style="foo"
-    :foo="bar"         >
-  </div>
+  <!-- ✓ GOOD -->
+  <div
+    class="foo"
+    :style="bar" />
+  <i
+    :class="{
+      'fa-angle-up' : isExpanded,
+      'fa-angle-down' : !isExpanded,
+    }"
+  />
+
+  <!-- ✗ BAD -->
+  <div     class="foo"
+    :style =  "bar"         />
+  <i
+    :class="{
+      'fa-angle-up'   : isExpanded,
+      'fa-angle-down' : !isExpanded,
+    }"
+  />
 </template>
 ```
 
-Examples of **correct** code for this rule:
+</eslint-code-block>
 
-```html
+## :wrench: Options
+
+```json
+{
+  "vue/no-multi-spaces": ["error", {
+    "ignoreProperties": false
+  }]
+}
+```
+
+- `ignoreProperties` ... whether or not objects' properties should be ignored. default `false`
+
+### `"ignoreProperties": true`
+
+<eslint-code-block fix :rules="{'vue/no-multi-spaces': ['error', { 'ignoreProperties': true }]}">
+
+```vue
 <template>
-  <div class="foo"
-    :style="foo">
-  </div>
+  <!-- ✓ GOOD -->
+  <i
+    :class="{
+      'fa-angle-up'   : isExpanded,
+      'fa-angle-down' : !isExpanded,
+    }"
+  />
 </template>
 ```
 
-### Options
+</eslint-code-block>
 
-Nothing
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/no-multi-spaces.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/no-multi-spaces.js)

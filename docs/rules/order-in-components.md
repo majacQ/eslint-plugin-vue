@@ -1,32 +1,46 @@
-# enforce order of properties in components (order-in-components)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/order-in-components
+description: enforce order of properties in components
+---
+# vue/order-in-components
+> enforce order of properties in components
 
-This rule makes sure you keep declared order of properties in components.
+- :gear: This rule is included in `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
+- :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
 
 ## :book: Rule Details
 
-Recommended order of properties is as follows:
+This rule makes sure you keep declared order of properties in components.
+Recommended order of properties can be [found here](https://vuejs.org/v2/style-guide/#Component-instance-options-order-recommended).
 
-1. Options / Misc (`name`, `delimiters`, `functional`, `model`)
-2. Options / Assets (`components`, `directives`, `filters`)
-3. Options / Composition (`parent`, `mixins`, `extends`, `provide`, `inject`)
-4. `el`
-5. `template`
-6. `props`
-7. `propsData`
-8. `data`
-9. `computed`
-10. `watch`
-11. `lifecycleHooks`
-12. `methods`
-13. `render`
-14. `renderError`
+<eslint-code-block fix :rules="{'vue/order-in-components': ['error']}">
 
-Note that `lifecycleHooks` is not a regular property - it indicates the group of all lifecycle hooks just to simplify the configuration.
+```vue
+<script>
+/* ✓ GOOD */
+export default {
+  name: 'app',
+  props: {
+    propA: Number
+  },
+  data () {
+    return {
+      msg: 'Welcome to Your Vue.js App'
+    }
+  }
+}
+</script>
+```
 
-Examples of **incorrect** code for this rule:
+</eslint-code-block>
 
-```js
+<eslint-code-block fix :rules="{'vue/order-in-components': ['error']}">
 
+```vue
+<script>
+/* ✗ BAD */
 export default {
   name: 'app',
   data () {
@@ -35,55 +49,54 @@ export default {
     }
   },
   props: {
-    propA: Number,
-  },
+    propA: Number
+  }
 }
-
+</script>
 ```
 
-Examples of **correct** code for this rule:
+</eslint-code-block>
 
-```js
-
-export default {
-  name: 'app',
-  props: {
-    propA: Number,
-  },
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
-    }
-  },
-}
-
-```
-
-### Options
-
-If you want you can change the order providing the optional configuration in your `.eslintrc` file. Setting responsible for the above order looks like this:
+## :wrench: Options
 
 ```json
 {
-  "vue/order-in-components": [2, {
+  "vue/order-in-components": ["error", {
     "order": [
-      ["name", "delimiters", "functional", "model"],
-      ["components", "directives", "filters"],
-      ["parent", "mixins", "extends", "provide", "inject"],
       "el",
-      "template",
-      "props",
-      "propsData",
+      "name",
+      "parent",
+      "functional",
+      ["delimiters", "comments"],
+      ["components", "directives", "filters"],
+      "extends",
+      "mixins",
+      "inheritAttrs",
+      "model",
+      ["props", "propsData"],
+      "fetch",
+      "asyncData",
       "data",
       "computed",
       "watch",
       "LIFECYCLE_HOOKS",
       "methods",
-      "render",
+      "head",
+      ["template", "render"],
       "renderError"
     ]
   }]
 }
 ```
 
-If you want some of properties to be treated equally in order you can group them into arrays, like we did with `name`, `delimiters`, `funcitonal` and `model`.
+- `order` (`(string | string[])[]`) ... The order of properties. Elements are the property names or `LIFECYCLE_HOOKS`. If an element is the array of strings, it means any of those can be placed there unordered. Default is above.
+
+
+## :books: Further reading
+
+- [Style guide - Component/instance options order](https://vuejs.org/v2/style-guide/#Component-instance-options-order-recommended)
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/order-in-components.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/order-in-components.js)

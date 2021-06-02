@@ -1,54 +1,43 @@
-# enforce end tag style (html-end-tags)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/html-end-tags
+description: enforce end tag style
+---
+# vue/html-end-tags
+> enforce end tag style
 
-- :wrench: The `--fix` option on the [command line](http://eslint.org/docs/user-guide/command-line-interface#fix) can automatically fix some of the problems reported by this rule.
-
-This rule enforce the way of end tags.
-
-- [Void elements] disallow end tags.
-- Other elements require end tags.
+- :gear: This rule is included in all of `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
+- :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
 
 ## :book: Rule Details
 
-This rule reports the following elements:
+This rule aims to disallow lacking end tags.
 
-- [Void elements] which have end tags.
-- Other elements which do not have end tags and are not self-closing.
+<eslint-code-block fix :rules="{'vue/html-end-tags': ['error']}">
 
-:-1: Examples of **incorrect** code for this rule:
-
-```html
+```vue
 <template>
-    <div>
-        <div>
-        <p>
-        <p>
-        <input></input>
-        <br></br>
-    </div>
+  <!-- ✓ GOOD -->
+  <div></div>
+  <p></p>
+  <p></p>
+  <input>
+  <br>
+
+  <!-- ✗ BAD -->
+  <div>
+  <p>
 </template>
 ```
 
-:+1: Examples of **correct** code for this rule:
-
-```html
-<template>
-    <div>
-        <div></div>
-        <p></p>
-        <p></p>
-        <div />
-        <input>
-        <br>
-    </div>
-</template>
-```
+</eslint-code-block>
 
 ## :wrench: Options
 
 Nothing.
 
-[Void elements]: https://www.w3.org/TR/html51/syntax.html#void-elements
+## :mag: Implementation
 
-## TODO: `<br></br>`
-
-`parse5` does not recognize the illegal end tags of void elements.
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/html-end-tags.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/html-end-tags.js)

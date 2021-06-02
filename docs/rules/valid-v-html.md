@@ -1,6 +1,13 @@
-# enforce valid `v-html` directives (valid-v-html)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/valid-v-html
+description: enforce valid `v-html` directives
+---
+# vue/valid-v-html
+> enforce valid `v-html` directives
 
-- :white_check_mark: The `"extends": "plugin:vue/recommended"` property in a configuration file enables this rule.
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
 This rule checks whether every `v-html` directive is valid.
 
@@ -12,29 +19,25 @@ This rule reports `v-html` directives in the following cases:
 - The directive has that modifier. E.g. `<div v-html.bbb></div>`
 - The directive does not have that attribute value. E.g. `<div v-html></div>`
 
+<eslint-code-block :rules="{'vue/valid-v-html': ['error']}">
+
+```vue
+<template>
+  <!-- ✓ GOOD -->
+  <div v-html="foo"/>
+
+  <!-- ✗ BAD -->
+  <div v-html/>
+  <div v-html:aaa="foo"/>
+  <div v-html.bbb="foo"/>
+</template>
+```
+
+</eslint-code-block>
+
+::: warning Note
 This rule does not check syntax errors in directives because it's checked by [no-parsing-error] rule.
-
-:-1: Examples of **incorrect** code for this rule:
-
-```html
-<template>
-    <div>
-        <div v-html></div>
-        <div v-html:aaa="foo"></div>
-        <div v-html.bbb="foo"></div>
-    </div>
-</template>
-```
-
-:+1: Examples of **correct** code for this rule:
-
-```html
-<template>
-    <div>
-        <div v-html="foo"></div>
-    </div>
-</template>
-```
+:::
 
 ## :wrench: Options
 
@@ -46,3 +49,8 @@ Nothing.
 
 
 [no-parsing-error]: no-parsing-error.md
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/valid-v-html.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/valid-v-html.js)

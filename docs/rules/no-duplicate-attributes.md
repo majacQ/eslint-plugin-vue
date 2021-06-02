@@ -1,4 +1,13 @@
-# disallow duplication of attributes (no-duplicate-attributes)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/no-duplicate-attributes
+description: disallow duplication of attributes
+---
+# vue/no-duplicate-attributes
+> disallow duplication of attributes
+
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
 When duplicate arguments exist, only the last one is valid.
 It's possibly mistakes.
@@ -8,39 +17,58 @@ It's possibly mistakes.
 This rule reports duplicate attributes.
 `v-bind:foo` directives are handled as the attributes `foo`.
 
-:-1: Examples of **incorrect** code for this rule:
+<eslint-code-block :rules="{'vue/no-duplicate-attributes': ['error']}">
 
-```html
+```vue
 <template>
-    <div foo="abc" :foo="def"></div>
+  <!-- ✓ GOOD -->
+  <MyComponent :foo="abc" />
+  <MyComponent foo="abc" />
+  <MyComponent class="abc" :class="def" />
+
+  <!-- ✗ BAD -->
+  <MyComponent :foo="abc" foo="def" />
+  <MyComponent foo="abc" :foo="def" />
+  <MyComponent foo="abc" foo="def" />
+  <MyComponent :foo.a="abc" :foo.b="def" />
+  <MyComponent class="abc" class="def" />
 </template>
 ```
 
-:+1: Examples of **correct** code for this rule:
-
-```html
-<template>
-    <div foo="abc"></div>
-    <div :foo="def"></div>
-</template>
-```
+</eslint-code-block>
 
 ## :wrench: Options
 
-`allowCoexistClass` - Enables [`v-bind:class`] directive can coexist with the plain `class` attribute.
-`allowCoexistStyle` - Enables [`v-bind:style`] directive can coexist with the plain `style` attribute.
-
+```json
+{
+  "vue/no-duplicate-attributes": ["error", {
+    "allowCoexistClass": true,
+    "allowCoexistStyle": true
+  }]
+}
 ```
-'vue/no-duplicate-attributes': [2, {
-  allowCoexistClass: Boolean // default: true
-  allowCoexistStyle: Boolean, // default: true
-}]
-```
 
-## TODO: `<div foo foo></div>`
-
-`parse5` remove duplicate attributes on the tokenization phase.
-Needs investigation to check.
+- `allowCoexistClass` (`boolean`) ... Enables [`v-bind:class`] directive can coexist with the plain `class` attribute. Default is `true`.
+- `allowCoexistStyle` (`boolean`) ... Enables [`v-bind:style`] directive can coexist with the plain `style` attribute. Default is `true`.
 
 [`v-bind:class`]: https://vuejs.org/v2/guide/class-and-style.html
 [`v-bind:style`]: https://vuejs.org/v2/guide/class-and-style.html
+
+### `"allowCoexistClass": false, "allowCoexistStyle": false`
+
+<eslint-code-block :rules="{'vue/no-duplicate-attributes': ['error', {allowCoexistClass: false, allowCoexistStyle: false}]}">
+
+```vue
+<template>
+  <!-- ✗ BAD -->
+  <MyComponent class="abc" :class="def" />
+  <MyComponent style="abc" :style="def" />
+</template>
+```
+
+</eslint-code-block>
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/no-duplicate-attributes.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/no-duplicate-attributes.js)

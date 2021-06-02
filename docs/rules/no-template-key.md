@@ -1,4 +1,13 @@
-# disallow `key` attribute on `<template>` (no-template-key)
+---
+pageClass: rule-details
+sidebarDepth: 0
+title: vue/no-template-key
+description: disallow `key` attribute on `<template>`
+---
+# vue/no-template-key
+> disallow `key` attribute on `<template>`
+
+- :gear: This rule is included in all of `"plugin:vue/vue3-essential"`, `"plugin:vue/essential"`, `"plugin:vue/vue3-strongly-recommended"`, `"plugin:vue/strongly-recommended"`, `"plugin:vue/vue3-recommended"` and `"plugin:vue/recommended"`.
 
 Vue.js disallows `key` attribute on `<template>` elements.
 
@@ -6,29 +15,32 @@ Vue.js disallows `key` attribute on `<template>` elements.
 
 This rule reports the `<template>` elements which have `key` attribute.
 
-:-1: Examples of **incorrect** code for this rule:
+<eslint-code-block :rules="{'vue/no-template-key': ['error']}">
 
-```html
+```vue
 <template>
-    <div>
-        <template key="x"></template>
-        <template v-bind:key="y"></template>
-        <template :key="z"></template>
-    </div>
+  <!-- ✓ GOOD -->
+  <div key="foo"> ... </div>
+  <template> ... </template>
+
+  <!-- ✗ BAD -->
+  <template key="foo"> ... </template>
+  <template v-bind:key="bar"> ... </template>
+  <template :key="baz"> ... </template>
 </template>
 ```
 
-:+1: Examples of **correct** code for this rule:
-
-```html
-<template>
-    <div>
-        <div key="x"></div>
-        <template></template>
-    </div>
-</template>
-```
+</eslint-code-block>
 
 ## :wrench: Options
 
 Nothing.
+
+## :books: Further reading
+
+- [API - Special Attributes - key](https://vuejs.org/v2/api/#key)
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/vuejs/eslint-plugin-vue/blob/master/lib/rules/no-template-key.js)
+- [Test source](https://github.com/vuejs/eslint-plugin-vue/blob/master/tests/lib/rules/no-template-key.js)

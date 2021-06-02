@@ -23,14 +23,15 @@ const ALLOWED_FIRST_WORDS = [
  * @returns {ASTNode} The Property node or null if not found.
  */
 function getPropertyFromObject (property, node) {
-  const properties = node.properties
+  if (node && node.type === 'ObjectExpression') {
+    const properties = node.properties
 
-  for (let i = 0; i < properties.length; i++) {
-    if (properties[i].key.name === property) {
-      return properties[i]
+    for (let i = 0; i < properties.length; i++) {
+      if (properties[i].key.name === property) {
+        return properties[i]
+      }
     }
   }
-
   return null
 }
 
@@ -43,7 +44,7 @@ function getPropertyFromObject (property, node) {
  */
 function checkMetaDocsDescription (context, exportsNode) {
   if (exportsNode.type !== 'ObjectExpression') {
-        // if the exported node is not the correct format, "internal-no-invalid-meta" will already report this.
+    // if the exported node is not the correct format, "internal-no-invalid-meta" will already report this.
     return
   }
 
@@ -52,7 +53,7 @@ function checkMetaDocsDescription (context, exportsNode) {
   const metaDocsDescription = metaDocs && getPropertyFromObject('description', metaDocs.value)
 
   if (!metaDocsDescription) {
-        // if there is no `meta.docs.description` property, "internal-no-invalid-meta" will already report this.
+    // if there is no `meta.docs.description` property, "internal-no-invalid-meta" will already report this.
     return
   }
 
@@ -115,8 +116,7 @@ module.exports = {
   meta: {
     docs: {
       description: 'enforce correct conventions of `meta.docs.description` property in core rules',
-      category: 'Internal',
-      recommended: false
+      categories: ['Internal']
     },
     fixable: 'code',
     schema: []
@@ -129,7 +129,8 @@ module.exports = {
             node.right &&
             node.left.type === 'MemberExpression' &&
             node.left.object.name === 'module' &&
-            node.left.property.name === 'exports') {
+            node.left.property.name === 'exports' &&
+            node.right.type === 'ObjectExpression') {
           checkMetaDocsDescription(context, node.right)
         }
       }
